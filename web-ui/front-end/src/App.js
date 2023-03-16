@@ -62,6 +62,11 @@ function App() {
   return (
     <div className="container">
       <h1 className="title">Pragraph Merge</h1>
+      <div className="actions">
+        <button onClick={handleMerge}>Merge</button>
+        <button onClick={handleSave}>Save</button>
+        <button onClick={handleInsert}>Insert</button>
+      </div>
       <div className="inputs">
         {inputs.map((input, index) => (
           <div key={index} className="input-group">
@@ -75,11 +80,6 @@ function App() {
           </div>
         ))}
         <button onClick={handleAddInput}>Add Input</button>
-      </div>
-      <div className="actions">
-        <button onClick={handleMerge}>Merge</button>
-        <button onClick={handleSave}>Save</button>
-        <button onClick={handleInsert}>Insert</button>
       </div>
     </div>
   );
