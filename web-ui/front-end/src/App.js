@@ -61,7 +61,7 @@ function App() {
 
   return (
     <div className="container">
-      <h1 className="title">Web Endpoint Example</h1>
+      <h1 className="title">Pragraph Merge</h1>
       <div className="inputs">
         {inputs.map((input, index) => (
           <div key={index} className="input-group">

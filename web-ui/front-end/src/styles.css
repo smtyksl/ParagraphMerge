@@ -9,11 +9,13 @@ h1 {
     align-items: center;
     flex-direction: column;
     height: 100vh;
+    margin-top: 0;
   }
   
   .center input {
     width: 80%;
     margin-bottom: 10px;
+    margin-left: 10000;
   }
   
   button {
@@ -29,6 +31,7 @@ h1 {
     margin: 4px 2px;
     transition-duration: 0.4s;
     border-radius: 8px;
+    
   }
   
   button:hover {
