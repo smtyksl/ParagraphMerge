@@ -1,9 +1,12 @@
 package com.example.paragraphmerge;
 
-import java.util.PriorityQueue;
+import org.springframework.stereotype.Component;
 
+import java.util.PriorityQueue;
+@Component
 public class MergingAlgoritm {
-    public static String mergeTexts(String... texts) {
+    public static String mergeText(String... texts) {
+
         int n = texts.length;
         if (n == 0) {
             return "";
@@ -13,6 +16,7 @@ public class MergingAlgoritm {
             PriorityQueue<TextIterator> pq = new PriorityQueue<>(n);
             for (String text : texts) {
                 pq.offer(new TextIterator(text));
+                System.out.println(text);
             }
             StringBuilder mergedText = new StringBuilder();
             while (!pq.isEmpty()) {

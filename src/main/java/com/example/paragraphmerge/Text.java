@@ -1,23 +1,26 @@
 package com.example.paragraphmerge;
 
-import org.springframework.web.bind.annotation.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.ArrayList;
-import java.util.List;
-
+@Document(collection = "merge")
 public class Text {
-	private Long id;
+	@Id
+	private String id;
 	private String title;
 	private String content;
 
-	public Text() {
+	public Text(String id, String title, String content) {
+		this.title = title;
+		this.content = content;
+		this.id = id;
 	}
 
-	public Long getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -36,7 +39,4 @@ public class Text {
 	public void setContent(String content) {
 		this.content = content;
 	}
-
-
-	// getters and setters
 }
