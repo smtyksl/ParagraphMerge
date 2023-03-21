@@ -5,6 +5,7 @@ import "./styles.css";
 
 function App() {
   const [text, setText] = useState('');
+  const [elapsedTime, setelapsedTime] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [lastSavedIds, setLastSavedIds] = useState(null);
   const generateUUID = () => {
@@ -75,6 +76,19 @@ function App() {
         console.log("mergeedd ==>>> ");
         // Handle error
       });
+      axios
+      .get("http://localhost:8080/merge/getElapsedTime")
+      .then((response) => {
+        console.log("mergeedd ==>>> ", response.data);
+        setelapsedTime(response.data)
+
+        // Handle response data
+      })
+      .catch((error) => {
+        console.error(error);
+        console.log("mergeedd ==>>> ");
+        // Handle error
+      });
     setIsModalOpen(true);
 
   };
@@ -105,8 +119,6 @@ function App() {
   return (
 
     <div className="container">
-
-
       <h1 className="title">Pragraph Merge</h1>
       <div className="actions">
         <button onClick={handleMerge}>Merge</button>
@@ -134,6 +146,8 @@ function App() {
             <div className="modal-content">
               <h2>Merging Operation Results</h2>
               <p>{text}</p>
+              <h2>AlgorithM Elapsed Time</h2>
+              <p>{elapsedTime}</p>
               <button onClick={closeModal}>Close</button>
             </div>
           </div>

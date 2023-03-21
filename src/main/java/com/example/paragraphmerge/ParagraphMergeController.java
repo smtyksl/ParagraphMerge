@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 
@@ -22,10 +23,15 @@ import java.util.Optional;
 public class ParagraphMergeController {
 	private List<Text> texts = new ArrayList<>();
 	private List<String> ids = new ArrayList<String>();
-
+	private long elapsedTime;
 	@Autowired
 	private MergeRepository mergeRepository;
+
+	@Autowired
+	private MergedRepository mergedRepository;
 	private String mergedText;
+
+	private MergedText mergedTextDTO;
 
 	private  MergingAlgoritm ma;
 
@@ -81,18 +87,32 @@ public class ParagraphMergeController {
 		return ids;
 	}
 	@PostMapping("/mergeTexts")
-	public String mergeTexts(@RequestBody List<String> idList){
+	public String mergeTexts(@RequestBody List<String> idList) throws InterruptedException {
 		List<Text> fromDBTexts = mergeRepository.findAllById(idList);
 		List<String> willBeMergedList = new ArrayList<String>();
 		for (Text txt : fromDBTexts)
 			willBeMergedList.add(txt.getContent());
+		long startTime = System.currentTimeMillis();
 		setMergedText(merge(willBeMergedList));
-		System.out.println("erroorrr");
+		long endTime = System.currentTimeMillis();
+		elapsedTime = endTime -startTime;
+		System.out.println("erroorrr"+elapsedTime);
+		mergedTextDTO = new MergedText();
+		mergedTextDTO.setId( UUID.randomUUID().toString());
+		mergedTextDTO.setTexts(idList);
+		mergedTextDTO.setMergedText(mergedText);
+		mergedRepository.insert(mergedTextDTO);
 		return mergedText;
 	}
 	@GetMapping("/getMergedText")
 	public String getMergedText(@RequestBody List<String> idList){
 		return mergedText;
+	}
+
+	@GetMapping("/getElapsedTime")
+	public String getRunningTime()
+	{
+		return  String.valueOf(elapsedTime);
 	}
 	public static String merge(List<String> texts) {
 		StringBuilder mergedText = new StringBuilder(texts.get(0));
@@ -110,6 +130,7 @@ public class ParagraphMergeController {
 		}
 		return mergedText.toString();
 	}
+
 
 	private static String findCommonSuffix(String str1, String str2) {
 		int minLength = Math.min(str1.length(), str2.length());
