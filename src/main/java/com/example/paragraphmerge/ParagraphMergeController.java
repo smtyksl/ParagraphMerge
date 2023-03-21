@@ -16,7 +16,9 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/texts")
+
+@CrossOrigin(origins = "http://localhost:3000")
+@RequestMapping("/merge")
 public class ParagraphMergeController {
 	private List<Text> texts = new ArrayList<>();
 	private List<String> ids = new ArrayList<String>();
@@ -62,23 +64,65 @@ public class ParagraphMergeController {
 		for (var txt : textList){
 			ids.add(txt.getId());
 		}
-
-
-		mergeRepository.insert(textList);
+		for (var text: textList) {
+			System.out.println(text.getId());
+			System.out.println(text.getContent());
+			System.out.println(text.getTitle());
+		}
+		mergeRepository.insert(textList );
 
 		return new ResponseEntity<>("Hello World!", HttpStatus.OK);
 	}
 	@GetMapping("/lastSavedIds")
 	public List<String> getlastSavedIds(){
+		for ( String id : ids) {
+			System.out.println("id ==>> "+ id);
+		}
 		return ids;
 	}
 	@PostMapping("/mergeTexts")
-	public List<String> mergeTexts(List<String> idList){
-		return idList;
-	}
-	@GetMapping("/getMergedText")
-	public String getMergedText(List<String> idList){
+	public String mergeTexts(@RequestBody List<String> idList){
+		List<Text> fromDBTexts = mergeRepository.findAllById(idList);
+		List<String> willBeMergedList = new ArrayList<String>();
+		for (Text txt : fromDBTexts)
+			willBeMergedList.add(txt.getContent());
+		setMergedText(merge(willBeMergedList));
+		System.out.println("erroorrr");
 		return mergedText;
 	}
+	@GetMapping("/getMergedText")
+	public String getMergedText(@RequestBody List<String> idList){
+		return mergedText;
+	}
+	public static String merge(List<String> texts) {
+		StringBuilder mergedText = new StringBuilder(texts.get(0));
+		for (String t: texts
+			 ) {
+			System.out.println(" *** " + t);
+		}
+		for (int i = 1; i < texts.size(); i++) {
+			String mutualPart = findCommonSuffix(mergedText.toString(), texts.get(i));
+			if (mutualPart.isEmpty()) {
+				// ortak kısım yok, cümleleri birleştiremeyiz
+				return "Couldnt merge texts.";
+			}
+			mergedText.append(texts.get(i).substring(mutualPart.length()));
+		}
+		return mergedText.toString();
+	}
 
+	private static String findCommonSuffix(String str1, String str2) {
+		int minLength = Math.min(str1.length(), str2.length());
+		StringBuilder mutualPart = new StringBuilder();
+		for (int i = 1; i <= minLength; i++) {
+			if (str1.endsWith(str2.substring(0, i))) {
+				mutualPart = new StringBuilder(str2.substring(0, i));
+			}
+		}
+		return mutualPart.toString();
+	}
+
+	public void setMergedText(String mergedText) {
+		this.mergedText = mergedText;
+	}
 }
