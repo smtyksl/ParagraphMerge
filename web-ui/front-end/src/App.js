@@ -1,6 +1,5 @@
 import { useState } from "react";
 import axios from "axios";
-import { v4 as uuidv4 } from 'uuid';
 import "./styles.css";
 
 function App() {
@@ -8,13 +7,8 @@ function App() {
   const [elapsedTime, setelapsedTime] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [lastSavedIds, setLastSavedIds] = useState(null);
-  const generateUUID = () => {
-    var id = uuidv4()
-    // console.log("id===>>> ", id)
-    return id;
-  }
+
   const [inputs, setInputs] = useState(["", ""]);
-  const [data, setData] = useState("");
 
   const handleInput = (e, index) => {
     const newInputs = [...inputs];
@@ -28,13 +22,6 @@ function App() {
 
   const handleRemoveInput = (indexToRemove) => {
     setInputs(inputs.filter((input, index) => index !== indexToRemove));
-  };
-
-  const handleInsert = () => {
-
-  };
-  const handleChange = (event) => {
-    setText(event.target.value);
   };
 
   const closeModal = () => {
@@ -80,7 +67,7 @@ function App() {
       .get("http://localhost:8080/merge/getElapsedTime")
       .then((response) => {
         console.log("mergeedd ==>>> ", response.data);
-        setelapsedTime(response.data)
+        setelapsedTime(response.data + " ms")
 
         // Handle response data
       })
@@ -94,18 +81,8 @@ function App() {
   };
 
   const handleSave = () => {
-    const jsonArray = [];
-    for (let i = 0; i < inputs.length; i++) {
-      const jsonObject = {
-        id: generateUUID(),
-        title: `title`,
-        content: inputs[i]
-      };
-      jsonArray.push(jsonObject);
-    }
-
     axios
-      .post("http://localhost:8080/merge/saveTexts", jsonArray)
+      .post("http://localhost:8080/merge/saveTexts", inputs)
       .then((response) => {
         console.log(response.data);
         // Handle response data

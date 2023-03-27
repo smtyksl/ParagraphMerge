@@ -10,11 +10,10 @@ public class Text {
 	private String title;
 	private String content;
 
-	public Text(String id, String title, String content) {
-		this.title = title;
+	public Text( String content) {
 		this.content = content;
-		this.id = id;
 	}
+
 
 	public String getId() {
 		return id;
@@ -39,4 +38,12 @@ public class Text {
 	public void setContent(String content) {
 		this.content = content;
 	}
+
+	public String toString() {
+		return "Text{" +
+				"id='" + id + '\'' +
+				", content='" + content + '\'' +
+				'}';
+	}
+
 }

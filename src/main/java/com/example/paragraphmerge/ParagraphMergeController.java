@@ -35,16 +35,6 @@ public class ParagraphMergeController {
 
 	private  MergingAlgoritm ma;
 
-
-/*
-	@GetMapping("/{id}")
-	public Text getBookById(@PathVariable Long id) {
-		return texts.stream()
-				.filter(text -> text.getId().equals(id))
-				.findFirst()
-				.orElse(null);
-	}*/
-
 	@PostMapping
 	public Text addText(@RequestBody Text text) {
 		texts.add(text);
@@ -52,31 +42,20 @@ public class ParagraphMergeController {
 		return text;
 	}
 	@PostMapping("/saveTexts")
-	public ResponseEntity<String> saveTexts(@RequestBody List<Text> textList) {
-		// Here you can perform any operations you need to save the texts based on the provided IDs
-		// For example, you could save the texts with the corresponding IDs to a database or external system
-
-		// Then you can return an appropriate HTTP status code based on the results
+	public ResponseEntity<String> saveTexts(@RequestBody List<String> textList) {
 		if (textList.size() < 1)
 			return new ResponseEntity<>("Text List is Empty!" , HttpStatus.NOT_ACCEPTABLE);
-		for ( Text txt : textList) {
-			if( (txt.getId().equals(null) || txt.getId().equals("")) ||
-					(txt.getTitle().equals(null) || txt.getTitle().equals("")) ||
-					(txt.getContent().equals(null) || txt.getContent().equals(""))){
-				return new ResponseEntity<>("Some contents are Empty!" , HttpStatus.NOT_ACCEPTABLE);
-			}
-		}
-		ids.clear();
-		for (var txt : textList){
-			ids.add(txt.getId());
-		}
-		for (var text: textList) {
-			System.out.println(text.getId());
-			System.out.println(text.getContent());
-			System.out.println(text.getTitle());
-		}
-		mergeRepository.insert(textList );
 
+		List<Text> textSList = new ArrayList<Text>();
+		for (var txt: textList)
+			textSList.add(new Text(txt));
+
+		ids.clear();
+		var savedList = mergeRepository.insert(textSList);
+		for (var txt: savedList) {
+			ids.add(txt.getId());
+			System.out.println(txt.toString());
+		}
 		return new ResponseEntity<>("Hello World!", HttpStatus.OK);
 	}
 	@GetMapping("/lastSavedIds")
@@ -95,17 +74,17 @@ public class ParagraphMergeController {
 		long startTime = System.currentTimeMillis();
 		setMergedText(merge(willBeMergedList));
 		long endTime = System.currentTimeMillis();
-		elapsedTime = endTime -startTime;
-		System.out.println("erroorrr"+elapsedTime);
+		elapsedTime = endTime - startTime;
+		System.out.println("Elapsed time " +elapsedTime);
+
 		mergedTextDTO = new MergedText();
-		mergedTextDTO.setId( UUID.randomUUID().toString());
 		mergedTextDTO.setTexts(idList);
 		mergedTextDTO.setMergedText(mergedText);
 		mergedRepository.insert(mergedTextDTO);
 		return mergedText;
 	}
 	@GetMapping("/getMergedText")
-	public String getMergedText(@RequestBody List<String> idList){
+	public String getMergedText(){
 		return mergedText;
 	}
 
