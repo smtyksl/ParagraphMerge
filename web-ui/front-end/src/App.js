@@ -6,7 +6,7 @@ function App() {
   const [text, setText] = useState('');
   const [elapsedTime, setelapsedTime] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [lastSavedIds, setLastSavedIds] = useState(null);
+  // const [lastSavedIds, setLastSavedIds] = useState(null);
 
   const [inputs, setInputs] = useState(["", ""]);
 
@@ -29,19 +29,7 @@ function App() {
   };
 
   const handleMerge = () => {
-    axios
-      .get("http://localhost:8080/merge/lastSavedIds", lastSavedIds)
-      .then((response) => {
-        console.log(response.data);
-        setLastSavedIds(response.data)
-
-        // Handle response data
-      })
-      .catch((error) => {
-        console.error(error);
-        // Handle error
-      });
-    axios.post("http://localhost:8080/merge/mergeTexts", lastSavedIds)
+    axios.post("http://localhost:8080/merge/mergeTexts")
       .then((response) => {
         console.log(response.data);
         setText(response.data);

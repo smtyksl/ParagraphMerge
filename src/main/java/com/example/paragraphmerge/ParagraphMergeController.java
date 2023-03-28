@@ -55,19 +55,21 @@ public class ParagraphMergeController {
 		for (var txt: savedList) {
 			ids.add(txt.getId());
 			System.out.println(txt.toString());
+			System.out.println(" save texts id "+ txt.getId());
 		}
 		return new ResponseEntity<>("Hello World!", HttpStatus.OK);
 	}
 	@GetMapping("/lastSavedIds")
 	public List<String> getlastSavedIds(){
 		for ( String id : ids) {
-			System.out.println("id ==>> "+ id);
+			System.out.println(" last saved id ==>> "+ id);
 		}
 		return ids;
 	}
 	@PostMapping("/mergeTexts")
-	public String mergeTexts(@RequestBody List<String> idList) throws InterruptedException {
-		List<Text> fromDBTexts = mergeRepository.findAllById(idList);
+	public String mergeTexts()  {
+		System.out.println( "merged  ids : "+ ids);
+		List<Text> fromDBTexts = mergeRepository.findAllById(ids);
 		List<String> willBeMergedList = new ArrayList<String>();
 		for (Text txt : fromDBTexts)
 			willBeMergedList.add(txt.getContent());
@@ -76,9 +78,10 @@ public class ParagraphMergeController {
 		long endTime = System.currentTimeMillis();
 		elapsedTime = endTime - startTime;
 		System.out.println("Elapsed time " +elapsedTime);
+		System.out.println("MErged Text " + mergedText);
 
 		mergedTextDTO = new MergedText();
-		mergedTextDTO.setTexts(idList);
+		mergedTextDTO.setTexts(ids);
 		mergedTextDTO.setMergedText(mergedText);
 		mergedRepository.insert(mergedTextDTO);
 		return mergedText;
