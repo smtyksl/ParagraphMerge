@@ -97,6 +97,8 @@ public class ParagraphMergeController {
 		return  String.valueOf(elapsedTime);
 	}
 	public static String merge(List<String> texts) {
+		for (int i = 1; i < texts.size(); i++)
+			texts.set(i, texts.get(i).toLowerCase());
 		StringBuilder mergedText = new StringBuilder(texts.get(0));
 		for (String t: texts
 			 ) {
